@@ -24,7 +24,7 @@ public class StudentController{
     @Autowired
     private JwtService jwtService;
 
-    @PostMapping("/login")
+    @PostMapping("/login-au")
     public ResponseEntity<String> Login(@RequestBody LoginRequest request){
         System.out.println(studentService.checkLogin(request.getUsername(), request.getPassword()));
         if(studentService.checkLogin(request.getUsername(), request.getPassword())){
@@ -35,7 +35,7 @@ public class StudentController{
             return new ResponseEntity<>(gson.toJson("thong tin khong dung"), HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
     }
-    @PostMapping("/login-au")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> Login_Au(@RequestBody LoginRequest request){
         String result = "";
         HttpStatus httpStatus = null;
