@@ -8,4 +8,6 @@ import java.util.Optional;
 @Repository
 public interface StudentRepository extends PagingAndSortingRepository<Student, Integer> {
     Optional<Student> findByUsernameAndPassword(String username, String password);
+
+    Optional<Student> findByUsername(String username);
 }

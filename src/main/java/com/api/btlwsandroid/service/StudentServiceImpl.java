@@ -2,7 +2,10 @@ package com.api.btlwsandroid.service;
 
 import com.api.btlwsandroid.dao.entity.Student;
 import com.api.btlwsandroid.dao.repo.StudentRepository;
+import com.api.btlwsandroid.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -33,5 +36,15 @@ public class StudentServiceImpl implements StudentService {
 
         Optional<Student> student = studentRepository.findByUsernameAndPassword(tk, mk);
         return student.isPresent();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        // Kiểm tra xem user có tồn tại trong database không?
+        Optional<Student> user = studentRepository.findByUsername(username);
+        if (!user.isPresent()) {
+            throw new UsernameNotFoundException(username);
+        }
+        return new CustomUserDetails(user.get());
     }
 }
