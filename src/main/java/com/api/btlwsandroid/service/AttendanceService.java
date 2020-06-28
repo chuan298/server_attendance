@@ -9,7 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface AttendanceService {
-    HttpResponse checkAttendance(String imgbase64) throws IOException, JSONException;
+    Boolean checkAttendance(String imgbase64) throws IOException, JSONException;
 
     List<Attendance> getAttendancesOfStudent(Integer studentId);
 

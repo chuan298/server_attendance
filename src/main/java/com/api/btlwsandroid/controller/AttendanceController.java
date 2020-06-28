@@ -31,7 +31,7 @@ public class AttendanceController {
     @PostMapping("/attendance")
     public ResponseEntity<String> Attendance(@RequestBody AttendanceRequest attendanceRequest, UriComponentsBuilder builder){
         try {
-            HttpResponse response = attendanceService.checkAttendance(attendanceRequest.getImgbase64());
+            Boolean response = attendanceService.checkAttendance(attendanceRequest.getImgbase64());
             return new ResponseEntity<>(gson.toJson(response), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/get-attendance-subject")
-    public ResponseEntity<String> getAttendanceOfSubjectOfStudent(@RequestParam(name = "student_id") String subjectId, @RequestParam(name = "subject_id") String studentId){
+    public ResponseEntity<String> getAttendanceOfSubjectOfStudent(@RequestParam(name = "student_id") String studentId, @RequestParam(name = "subject_id") String subjectId){
         List<Attendance> attendances = attendanceService.getAttendancesOfSubjectOfStudent(Integer.parseInt(subjectId), Integer.parseInt(studentId));
         if(attendances != null)
             return new ResponseEntity<>(gson.toJson(attendances), HttpStatus.OK);

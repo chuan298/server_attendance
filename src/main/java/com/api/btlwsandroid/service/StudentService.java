@@ -11,4 +11,6 @@ public interface StudentService {
     Student findById(Integer id);
     boolean checkLogin(String tk, String mk);
     UserDetails loadUserByUsername(String username);
+    Boolean changePassword(Integer studentId, String password);
+    Student getStudentByUsername(String username);
 }

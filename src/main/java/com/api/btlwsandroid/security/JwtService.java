@@ -1,5 +1,6 @@
 package com.api.btlwsandroid.security;
 
+import com.api.btlwsandroid.dao.entity.Student;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
@@ -16,17 +17,18 @@ import java.util.Date;
 public class JwtService {
 
 	public static final String USERNAME = "username";
-	public static final String SECRET_KEY = "duyenxinhgai";
+	public static final String SECRET_KEY = "laithiduyenxinhgaidangyeu16022001";
 	public static final int EXPIRE_TIME = 86400000;
 
-	public String generateTokenLogin(String username) {
+	public String generateTokenLogin(Student student) {
 		String token = null;
 		try {
 			// Create HMAC signer
 			JWSSigner signer = new MACSigner(generateShareSecret());
 
 			JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
-			builder.claim(USERNAME, username);
+			builder.claim("id", student.getId());
+			builder.claim(USERNAME, student.getUsername());
 			builder.expirationTime(generateExpirationDate());
 
 			JWTClaimsSet claimsSet = builder.build();

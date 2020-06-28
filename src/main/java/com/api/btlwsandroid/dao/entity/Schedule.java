@@ -16,10 +16,6 @@ public class Schedule implements Serializable{
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name="id_subject_group")
-    private SubjectGroup subjectGroup;
-
-    @ManyToOne
     @JoinColumn(name="id_practice_group")
     private PracticeGroup practiceGroup;
 }

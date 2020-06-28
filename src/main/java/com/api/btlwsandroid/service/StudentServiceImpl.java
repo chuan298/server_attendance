@@ -4,6 +4,7 @@ import com.api.btlwsandroid.dao.entity.Student;
 import com.api.btlwsandroid.dao.repo.StudentRepository;
 import com.api.btlwsandroid.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -40,11 +41,43 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        // Kiểm tra xem user có tồn tại trong database không?
+
         Optional<Student> user = studentRepository.findByUsername(username);
         if (!user.isPresent()) {
             throw new UsernameNotFoundException(username);
         }
         return new CustomUserDetails(user.get());
     }
+
+    @Override
+    public Boolean changePassword(Integer studentId, String password) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        try{
+            Student stu = student.get();
+            stu.setPassword(password);
+            studentRepository.save(stu);
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+
+    }
+
+    @Override
+    public Student getStudentByUsername(String username) {
+        Optional<Student> student = studentRepository.findByUsername(username);
+        if (!student.isPresent()) {
+            throw new UsernameNotFoundException(username);
+        }
+        return student.get();
+    }
+
+//    public static void main(String[] args) {
+//        StudentServiceImpl a = new StudentServiceImpl();
+////        System.out.println(a.changePassword(1, "123"));
+////        a.changePassword(1, "123");
+//        a.checkLogin("dá", "dsa");
+//    }
 }

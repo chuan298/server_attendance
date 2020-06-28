@@ -13,8 +13,11 @@ import java.util.Optional;
 @Repository
 public interface ScheduleRepository extends PagingAndSortingRepository<Schedule, Integer> {
 
-    Optional<Schedule> findBySubjectGroupIdAndPracticeGroupId(Integer subjectGroup_id, Integer practiceGroup_id);
+    @Query(value = "SELECT * FROM schedule sch, subject_group sg, student_course sc, practice_group pg WHERE sc.id_student = :studentId AND sc.id_subject_group = sg.id AND sg.id = pg.id_subject_group AND sch.id_practice_group = pg.id", nativeQuery = true)
+    List<Schedule> findAllSubjectGroupScheduleOfStudent(@Param("studentId") String studentId);
 
-    @Query(value = "SELECT * FROM `schedule` sh, subject_group su, student_course st WHERE st.id_student = :studentId AND st.id_subject_group = su.id AND sh.id_subject_group = su.id", nativeQuery = true)
-    List<Schedule> fillAllSubjectGroupScheduleOfStudent(@Param("studentId") String studentId);
+    @Query(value = "SELECT * FROM schedule sch, subject_group sg, student_course sc, practice_group pg " +
+            "WHERE sc.id_student = :studentId AND sc.id_subject_group = sg.id AND sg.id = pg.id_subject_group AND sch.id_practice_group = pg.id " +
+            "AND (sg.day = :schoolDay OR pg.day_practice = :schoolDay) AND (sg.week_1 LIKE %:schoolWeek% OR sg.week_2 LIKE %:schoolWeek% OR pg.week_practice LIKE %:schoolWeek%) AND (sg.id_shift_1 = :schoolShiftId OR sg.id_shift_2 = :schoolShiftId OR pg.id_practice_shift = :schoolShiftId)", nativeQuery = true)
+    List<Schedule> findCurrentScheduleOfStudent(@Param("studentId") String studentId, @Param("schoolDay") String schoolDay, @Param("schoolWeek") String schoolWeek, @Param("schoolShiftId") String schoolShiftId);
 }
