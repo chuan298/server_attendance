@@ -74,6 +74,21 @@ public class StudentServiceImpl implements StudentService {
         return student.get();
     }
 
+    @Override
+    public Boolean changeAvatar(Integer studentId, String imgbase64) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        try{
+            Student stu = student.get();
+            stu.setAvatar(imgbase64);
+            studentRepository.save(stu);
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 //    public static void main(String[] args) {
 //        StudentServiceImpl a = new StudentServiceImpl();
 ////        System.out.println(a.changePassword(1, "123"));

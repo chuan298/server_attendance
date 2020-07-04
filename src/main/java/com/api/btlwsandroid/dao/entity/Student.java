@@ -32,4 +32,7 @@ public class Student implements Serializable {
 
     @Column(name="phone_number")
     private String phone;
+
+    @Column(name = "avatar")
+    private String avatar;
 }

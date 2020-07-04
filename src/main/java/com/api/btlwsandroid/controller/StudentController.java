@@ -1,17 +1,20 @@
 package com.api.btlwsandroid.controller;
 
 import com.api.btlwsandroid.dao.entity.Student;
-import com.api.btlwsandroid.dto.request.ChangePassRequest;
+import com.api.btlwsandroid.dto.request.ChangeInfoRequest;
 import com.api.btlwsandroid.dto.request.LoginRequest;
 import com.api.btlwsandroid.dto.response.LoginResponse;
 import com.api.btlwsandroid.security.JwtService;
 import com.api.btlwsandroid.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
+
+import javax.annotation.Nullable;
 
 
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = {"Access-Control-Allow-Origin", "Access-Control-Expose-Headers"} )
@@ -26,19 +29,9 @@ public class StudentController{
     @Autowired
     private JwtService jwtService;
 
-    @PostMapping("/login-au")
-    public ResponseEntity<String> Login(@RequestBody LoginRequest request){
-        System.out.println(studentService.checkLogin(request.getUsername(), request.getPassword()));
-        if(studentService.checkLogin(request.getUsername(), request.getPassword())){
 
-            return new ResponseEntity<>(gson.toJson("dang nhap thanh cong"), HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(gson.toJson("thong tin khong dung"), HttpStatus.NON_AUTHORITATIVE_INFORMATION);
-        }
-    }
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> Login_Au(@RequestBody LoginRequest request){
+    public ResponseEntity<LoginResponse> Login(@RequestBody LoginRequest request){
         String result = "";
         HttpStatus httpStatus = null;
         System.out.println(request);
@@ -60,16 +53,29 @@ public class StudentController{
     }
 
     @GetMapping("/get-info")
-    public ResponseEntity<String> getUser(@RequestParam("student_id") String id){
-        Student student = studentService.findById(Integer.parseInt(id));
-        if(student != null)
+    public ResponseEntity<String> getUser(@Nullable @RequestParam("student_id") String id, @RequestHeader HttpHeaders headers){
+        try{
+            String token = jwtService.getJwtFromHeader(headers);
+            Integer idUser = jwtService.getIdFromToken(token);
+            String username = jwtService.getUsernameFromToken(token);
+            Student student = studentService.findById(Integer.parseInt(idUser + ""));
+            student.setPassword(null);
             return new ResponseEntity<>(gson.toJson(student), HttpStatus.OK);
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(null, HttpStatus.OK);
+
 
     }
     @PutMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody ChangePassRequest request){
+    public ResponseEntity<String> changePassword(@RequestBody ChangeInfoRequest request, @RequestHeader HttpHeaders headers){
         try {
+            String token = jwtService.getJwtFromHeader(headers);
+            Integer id = jwtService.getIdFromToken(token);
+            String username = jwtService.getUsernameFromToken(token);
+            request.setStudent_id(id);
             if (studentService.changePassword(request.getStudent_id(), request.getPassword())){
                 return new ResponseEntity<>("Đổi mật khẩu thành công", HttpStatus.OK);
             }
@@ -77,6 +83,22 @@ public class StudentController{
         catch (Exception e){
             e.printStackTrace();
         }
-        return new ResponseEntity<>("Đổi mật khẩu thất bại", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Đổi mật khẩu thất bại", HttpStatus.OK);
+    }
+    @PutMapping("/change-avatar")
+    public ResponseEntity<String> changeAvatar(@RequestBody ChangeInfoRequest request, @RequestHeader HttpHeaders headers){
+        try {
+            String token = jwtService.getJwtFromHeader(headers);
+            Integer id = jwtService.getIdFromToken(token);
+            String username = jwtService.getUsernameFromToken(token);
+            request.setStudent_id(id);
+            if (studentService.changeAvatar(request.getStudent_id(), request.getImgbase64())){
+                return new ResponseEntity<>("Đổi ảnh đại diện thành công", HttpStatus.OK);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("Đổi ảnh đại diện thất bại", HttpStatus.OK);
     }
 }

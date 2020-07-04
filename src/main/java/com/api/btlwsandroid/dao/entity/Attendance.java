@@ -1,5 +1,6 @@
 package com.api.btlwsandroid.dao.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,4 +22,14 @@ public class Attendance implements Serializable {
 
     @Column(name = "time")
     private String time;
+
+    @Column(name = "image")
+    private String image;
+
+    @OneToOne
+    @JoinColumn(name = "id_schedule")
+    private Schedule schedule;
+
+    @Column(name = "type_schedule")
+    private Integer type_schedule;
 }

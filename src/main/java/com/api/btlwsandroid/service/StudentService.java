@@ -13,4 +13,5 @@ public interface StudentService {
     UserDetails loadUserByUsername(String username);
     Boolean changePassword(Integer studentId, String password);
     Student getStudentByUsername(String username);
+    Boolean changeAvatar(Integer studentId, String imgbase64);
 }

@@ -48,5 +48,8 @@ public class SubjectGroup implements Serializable {
     @Column(name="code")
     private String code;
 
+    @Column(name = "teacher")
+    private String teacher;
+
 
 }

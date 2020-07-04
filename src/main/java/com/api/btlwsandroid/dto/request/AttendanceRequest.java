@@ -22,4 +22,12 @@ public class AttendanceRequest implements Serializable {
     private Double longitude;
 
     private Double latitude;
+
+    private Integer studentId;
+
+    private String username;
+
+    private Integer subject_group_id;
+
+    private String time;
 }

@@ -9,16 +9,22 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestHeader;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Service
 public class JwtService {
 
 	public static final String USERNAME = "username";
+	public static final String NAME = "name";
+	public static final String ID = "id";
 	public static final String SECRET_KEY = "laithiduyenxinhgaidangyeu16022001";
-	public static final int EXPIRE_TIME = 86400000;
+	public static final int EXPIRE_TIME = 864000000;
 
 	public String generateTokenLogin(Student student) {
 		String token = null;
@@ -27,7 +33,8 @@ public class JwtService {
 			JWSSigner signer = new MACSigner(generateShareSecret());
 
 			JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
-			builder.claim("id", student.getId());
+			builder.claim(ID, student.getId());
+			builder.claim(NAME, student.getName());
 			builder.claim(USERNAME, student.getUsername());
 			builder.expirationTime(generateExpirationDate());
 
@@ -83,6 +90,28 @@ public class JwtService {
 		return username;
 	}
 
+	public String getNameFromToken(String token) {
+		String name = null;
+		try {
+			JWTClaimsSet claims = getClaimsFromToken(token);
+			name = claims.getStringClaim(NAME);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return name;
+	}
+
+	public Integer getIdFromToken(String token) {
+		Integer id = null;
+		try {
+			JWTClaimsSet claims = getClaimsFromToken(token);
+			id = claims.getIntegerClaim(ID);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return id;
+	}
+
 	private byte[] generateShareSecret() {
 		// Generate 256-bit (32-byte) shared secret
 		byte[] sharedSecret = new byte[32];
@@ -100,14 +129,23 @@ public class JwtService {
 			return false;
 		}
 		String username = getUsernameFromToken(token);
-
-		if (username == null || username.isEmpty()) {
+		String name = getNameFromToken(token);
+		Integer id = getIdFromToken(token);
+		if (username == null || username.isEmpty() || name == null || name.isEmpty() || id == null) {
 			return false;
 		}
 		if (isTokenExpired(token)) {
 			return false;
 		}
 		return true;
+	}
+	public String getJwtFromHeader(HttpHeaders headers) {
+		String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+		// Kiểm tra xem header Authorization có chứa thông tin jwt không
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7);
+		}
+		return null;
 	}
 
 }
