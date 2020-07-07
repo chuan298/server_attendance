@@ -33,7 +33,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
-    private static final String SCHOOL_TIME_START = "00:00 04/05/2020";
+    private static final String SCHOOL_TIME_START = "00:00 01/06/2020";
     private static final Integer SHIFT1 = 1;
     private static final Integer SHIFT2 = 2;
     private static final Integer PRACTICE_SHIFT = 3;

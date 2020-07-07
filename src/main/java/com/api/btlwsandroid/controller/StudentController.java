@@ -76,14 +76,14 @@ public class StudentController{
             Integer id = jwtService.getIdFromToken(token);
             String username = jwtService.getUsernameFromToken(token);
             request.setStudent_id(id);
-            if (studentService.changePassword(request.getStudent_id(), request.getPassword())){
+            if (studentService.changePassword(request.getStudent_id(), request.getOldPassword(), request.getNewPassword())){
                 return new ResponseEntity<>("Đổi mật khẩu thành công", HttpStatus.OK);
             }
         }
         catch (Exception e){
             e.printStackTrace();
         }
-        return new ResponseEntity<>("Đổi mật khẩu thất bại", HttpStatus.OK);
+        return new ResponseEntity<>("Đổi mật khẩu thất bại", HttpStatus.CONFLICT);
     }
     @PutMapping("/change-avatar")
     public ResponseEntity<String> changeAvatar(@RequestBody ChangeInfoRequest request, @RequestHeader HttpHeaders headers){
@@ -99,6 +99,6 @@ public class StudentController{
         catch (Exception e){
             e.printStackTrace();
         }
-        return new ResponseEntity<>("Đổi ảnh đại diện thất bại", HttpStatus.OK);
+        return new ResponseEntity<>("Đổi ảnh đại diện thất bại", HttpStatus.CONFLICT);
     }
 }

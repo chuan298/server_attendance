@@ -50,13 +50,16 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Boolean changePassword(Integer studentId, String password) {
+    public Boolean changePassword(Integer studentId, String oldPassword, String newPassword) {
         Optional<Student> student = studentRepository.findById(studentId);
         try{
             Student stu = student.get();
-            stu.setPassword(password);
-            studentRepository.save(stu);
-            return true;
+            System.out.println(stu);
+            if(stu.getPassword().equals(oldPassword)){
+                stu.setPassword(newPassword);
+                save(stu);
+                return true;
+            }
         }
         catch (Exception e){
             e.printStackTrace();
@@ -80,7 +83,7 @@ public class StudentServiceImpl implements StudentService {
         try{
             Student stu = student.get();
             stu.setAvatar(imgbase64);
-            studentRepository.save(stu);
+            save(stu);
             return true;
         }
         catch (Exception e){

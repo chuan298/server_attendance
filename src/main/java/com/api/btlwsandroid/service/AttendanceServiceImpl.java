@@ -43,7 +43,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Autowired
     private JwtService jwtService;
 
-    private static final String URL_RECOG = "http://5d05d5b041b6.ngrok.io";
+    private static final String URL_RECOG = "https://5a793888a1a4.ngrok.io";
 
     private static final int ALLOWED_TIME = 15;
     private static final Double LATITUDE = 20.9807015;
@@ -68,11 +68,12 @@ public class AttendanceServiceImpl implements AttendanceService {
         int hour_now = Integer.parseInt(timeNow.substring(0,2));
         int minute_now = Integer.parseInt(timeNow.substring(3,5));
         System.out.println("thoi gian chenh lech: " + ((hour_now - hour_time)*60 + minute_now - minute_time));
+        System.out.println("vi tri: " + latitude + " " + longitude);
         //
         String message = "";
         if((latitude > LATITUDE - RANGE && longitude > LONGITUDE - RANGE) && (latitude < LATITUDE + RANGE && longitude < LONGITUDE + RANGE)){
             if(((hour_now - hour_time)*60 + minute_now - minute_time) > 0 && ((hour_now - hour_time)*60 + minute_now - minute_time) < ALLOWED_TIME){
-                System.out.println("thoi gian chenh lech: " + ((hour_now - hour_time)*60 + minute_now - minute_time));
+//                System.out.println("thoi gian chenh lech: " + ((hour_now - hour_time)*60 + minute_now - minute_time));
                 ResponseEntity<String> result = restTemplate.postForEntity(URL_RECOG + "/reco", requestBody, String.class);
 
                 //TypeReference<List<RecognizeResponse>> typeReference = new TypeReference<List<RecognizeResponse>>() {};

@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class ChangeInfoRequest implements Serializable {
     private static final long serialVersionUID = 152415155519L;
     Integer student_id;
-    String password;
+    String newPassword;
+    String oldPassword;
     String imgbase64;
 }
